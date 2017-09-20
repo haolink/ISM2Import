@@ -15,8 +15,8 @@ namespace ISM2Import
     {
         static void Main(string[] args)
         {
-            PMXModel md = ISMModel.ImportISM(@"F:\Steam\SteamApps\common\Megadimension Neptunia VII\CONTENTS\GAME\model\map\3000\001\model01.ism2");
-            md.SaveToFile(@"F:\Steam\SteamApps\common\Megadimension Neptunia VII\CONTENTS\GAME\model\map\3000\001\model01.pmx");
+            PMXModel md = ISMModel.ImportISM(@"F:\Steam\SteamApps\common\Megadimension Neptunia VII\CONTENTS\GAME\model\chara\001\002.ism2");
+            md.SaveToFile(@"F:\Steam\SteamApps\common\Megadimension Neptunia VII\CONTENTS\GAME\model\chara\001\002.pmx");
             Console.ReadLine();
         }
     }

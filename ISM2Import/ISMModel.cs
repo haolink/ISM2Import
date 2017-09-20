@@ -18,6 +18,22 @@ namespace ISM2Import
         {
             ISMModel im = new ISMModel(filename);
             PMXModel ret = im.pmxModel;
+
+            //Rotate model by 180°
+
+            foreach(PMXVertex vtx in ret.Vertices)
+            {
+                vtx.Position.X *= -1;
+                vtx.Position.Z *= -1;
+                vtx.Normals.X *= -1;
+                vtx.Normals.Z *= -1;
+            }
+            foreach (PMXBone bn in ret.Bones)
+            {
+                bn.Position.X *= -1;
+                bn.Position.Z *= -1;                
+            }
+
             im = null;
             return ret;
         }
@@ -44,9 +60,11 @@ namespace ISM2Import
         private StreamParser sp;
         private byte versionA;
 
-        private float _totalScale = 1f;
+        private float _totalScale = 12.5f;
 
         private Dictionary<int, PMXBone> BoneArrRig = new Dictionary<int, PMXBone>();
+
+        private List<string> SurfaceTextures = new List<string>();
 
         private ISMModel(string filename)
         {
@@ -128,6 +146,65 @@ namespace ISM2Import
              * Importing strings end
              */
 
+
+            /**
+             *  Materials
+             */
+            foreach (SectionData sd in SectionArray)
+            {
+                if (sd.SectionType == 97)
+                {
+                    sp.BaseStream.Seek(sd.SectionOffset + 8, SeekOrigin.Begin);
+                    int matTotal = sp.ReadS32();
+                    uint[] matOffsetArray = new uint[matTotal];
+                    for (i = 0; i < matTotal; i++)
+                    {
+                        matOffsetArray[i] = sp.ReadU32();
+                    }
+
+                    for (i = 0; i < matTotal; i++)
+                    {
+                        sp.BaseStream.Seek(matOffsetArray[i] + 8, SeekOrigin.Begin);
+                        int matSubTotal = sp.ReadS32();
+                        string matSubString1 = stringArray[sp.ReadS32()];
+                        string matSubString2 = stringArray[sp.ReadS32()];
+                        string matSubString3 = stringArray[sp.ReadS32()];
+                        sp.BaseStream.Seek(4, SeekOrigin.Current);
+
+                        PMXMaterial mat = new PMXMaterial(pmxModel);
+                        pmxModel.Materials.Add(mat);
+                        mat.NameEN = matSubString1;
+                        mat.NameJP = matSubString1;
+                        mat.Diffuse = new PMXColorRGB(0.77f, 0.77f, 0.77f);
+                        mat.Specular = new PMXColorRGB(0.0f, 0.0f, 0.0f);
+                        mat.Ambient = new PMXColorRGB(1.0f, 1.0f, 1.0f);
+                        mat.StandardToonIndex = 4;
+
+                        if (matSubTotal > 0)
+                        {
+                            int matSubOffset = sp.ReadS32();
+                            sp.BaseStream.Seek(matSubOffset + 12, SeekOrigin.Begin);
+                            matSubOffset = sp.ReadS32();
+                            sp.BaseStream.Seek(matSubOffset + 20, SeekOrigin.Begin);
+                            matSubOffset = sp.ReadS32();
+                            sp.BaseStream.Seek(matSubOffset + 24, SeekOrigin.Begin);
+                            matSubOffset = sp.ReadS32();
+                            sp.BaseStream.Seek(matSubOffset + 24, SeekOrigin.Begin);
+                            matSubOffset = sp.ReadS32();
+                            sp.BaseStream.Seek(matSubOffset, SeekOrigin.Begin);
+                            mat.DiffuseTexture = stringArray[sp.ReadS32()] + ".png";
+                        }
+                        else
+                        {
+                            mat.DiffuseTexture = "tex_c.png";
+                        }
+
+
+                        //Console.WriteLine(texturename);
+                    }
+                }
+            }
+
             /**
              *  Bones and material groups
              */
@@ -199,7 +276,7 @@ namespace ISM2Import
             /**
              * Importing textures begin
              */
-            foreach (SectionData sd in SectionArray)
+            /*foreach (SectionData sd in SectionArray)
             {
                 if (sd.SectionType == 46)
                 {
@@ -219,8 +296,9 @@ namespace ISM2Import
                         //Console.WriteLine(texturename);
                     }
                 }
-            }
-            
+            }*/
+            //TODO: Not sure what these do
+
             /**
              * Importing strings end
              */
@@ -319,9 +397,23 @@ namespace ISM2Import
                     int triCount = (sp.ReadS32() / 3);
                     ushort triType = sp.ReadU16();
                     sp.BaseStream.Seek(6, SeekOrigin.Current);
-                    //int matNum = 0;
+                    int matNum = matIndex;
 
-                    ImportTrianglesToMaterial(pmxModel.Materials[matIndex], triCount, triType);                    
+                    if(matIndex < this.SurfaceTextures.Count)
+                    {
+                        string texName = this.SurfaceTextures[matIndex];
+                        for(j = 0; j < Math.Min(this.SurfaceTextures.Count, this.pmxModel.Materials.Count); j++)
+                        {
+                            string matName = this.pmxModel.Materials[j].NameEN;
+                            if(matName == texName)
+                            {
+                                matNum = j;
+                                break;
+                            }
+                        }
+                    }
+
+                    ImportTrianglesToMaterial(pmxModel.Materials[matNum], triCount, triType);                    
                 }
             }
             matIndex++;
@@ -745,17 +837,8 @@ namespace ISM2Import
                 string surfaceMatName = stringArray[sp.ReadS32()];
                 string surfaceTexName = stringArray[sp.ReadS32()];
 
-                PMXMaterial pmxMat = new PMXMaterial(pmxModel);
-                pmxMat.NameEN = surfaceMatName;
-                pmxMat.NameJP = surfaceMatName;
-                pmxMat.Diffuse = new PMXColorRGB(0.77f, 0.77f, 0.77f);
-                pmxMat.Specular = new PMXColorRGB(0.0f, 0.0f, 0.0f);
-                pmxMat.Ambient = new PMXColorRGB(1.0f, 1.0f, 1.0f);
-                pmxMat.DiffuseTexture = surfaceTexName + ".png";
-                pmxMat.StandardToonIndex = 4;
-
-                pmxModel.Materials.Add(pmxMat);
-
+                this.SurfaceTextures.Add(surfaceTexName);
+                
                 /*Console.WriteLine(surfaceMatName);
                 Console.WriteLine(surfaceTexName);*/
             }  
