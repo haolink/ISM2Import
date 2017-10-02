@@ -85,6 +85,7 @@
     <Compile Include="PMXModel\PMXClasses\Parts\VertexDeform\PMXVertexDeformQDEF.cs" />
     <Compile Include="PMXModel\PMXClasses\Parts\VertexDeform\PMXVertexDeformSDEF.cs" />
     <Compile Include="PMXModel\PMXClasses\PMXModel.cs" />
+    <Compile Include="PMXVertexExtensions.cs" />
     <Compile Include="Program.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>

@@ -8,7 +8,7 @@ using PMXStructure.PMXClasses.Parts.VertexDeform;
 
 namespace PMXStructure.PMXClasses.Parts
 {
-    public class PMXVertex : PMXBasePart
+    public partial class PMXVertex : PMXBasePart
     {
         public PMXVector3 Position { get; set; }
         public PMXVector3 Normals { get; set; }

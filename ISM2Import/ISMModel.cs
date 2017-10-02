@@ -178,7 +178,8 @@ namespace ISM2Import
                         mat.Diffuse = new PMXColorRGB(0.77f, 0.77f, 0.77f);
                         mat.Specular = new PMXColorRGB(0.0f, 0.0f, 0.0f);
                         mat.Ambient = new PMXColorRGB(1.0f, 1.0f, 1.0f);
-                        mat.StandardToonIndex = 4;
+                        mat.StandardToonIndex = 3;
+                        mat.EdgeEnabled = false;
 
                         if (matSubTotal > 0)
                         {
@@ -508,7 +509,7 @@ namespace ISM2Import
                     if (vtxSize == 0x30 && versionA == 2)
                     {
                         CreateDeform(vtx, 8, 2, 4);
-                        sp.BaseStream.Seek(8, SeekOrigin.Current);
+                        //sp.BaseStream.Seek(8, SeekOrigin.Current);
                     }
                 }                                
             }
@@ -523,7 +524,7 @@ namespace ISM2Import
 
             public int CompareTo(BonePlusWeight b)
             {
-                return this.Weight.CompareTo(b.Weight);
+                return (-1) * this.Weight.CompareTo(b.Weight);
             }
         }
         private void CreateDeform(PMXVertex vtx, int boneCount, int boneIndexSize, int floatLength)
@@ -628,7 +629,15 @@ namespace ISM2Import
             }
             else
             {
-                return this.BoneArrRig[boneId];
+                if(boneId >= this.BoneArrRig.Count)
+                {
+                    //Console.WriteLine("Mark here");
+                    return null;
+                } else
+                {
+                    return this.BoneArrRig[boneId];
+                }
+                
             }
         }
 
@@ -761,10 +770,10 @@ namespace ISM2Import
 
 
             Matrix4x4 tfm = Matrix4x4.CreateScale(sX, sY, sZ);
-            /*tfm = tfm * Matrix4x4.CreateRotationX(DegreeToRadian(m18)) * Matrix4x4.CreateRotationY(DegreeToRadian(m28)) * Matrix4x4.CreateRotationZ(DegreeToRadian(m38));
+            tfm = tfm * Matrix4x4.CreateRotationX(DegreeToRadian(m18)) * Matrix4x4.CreateRotationY(DegreeToRadian(m28)) * Matrix4x4.CreateRotationZ(DegreeToRadian(m38));
             Matrix4x4 tfm2 = Matrix4x4.CreateScale(sX, sY, sZ);
             tfm2 = tfm2 * Matrix4x4.CreateRotationX(DegreeToRadian(m14)) * Matrix4x4.CreateRotationY(DegreeToRadian(m24)) * Matrix4x4.CreateRotationZ(DegreeToRadian(m34));
-            tfm = tfm * tfm2;*/
+            tfm = tfm * tfm2;
             tfm.M41 = m41;
             tfm.M42 = m42;
             tfm.M43 = m43;
