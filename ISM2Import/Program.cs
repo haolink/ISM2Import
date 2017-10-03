@@ -36,6 +36,7 @@ namespace ISM2Import
                 Console.WriteLine("Importing " + Path.GetFileNameWithoutExtension(ism2));
                 PMXModel md = ISMModel.ImportISM(ism2);
                 CleanUpModel(md);
+                TriangleClearance.SeperateTriangles(md, false, true);
                 md.SaveToFile(pmx);
                 Console.WriteLine("");                    
             }
