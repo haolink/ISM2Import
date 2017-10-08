@@ -5,9 +5,6 @@ using System.Text;
 using System.Threading.Tasks;
 
 using PMXStructure.PMXClasses;
-
-using PMXStructure.PMXClasses.Parts;
-using PMXStructure.PMXClasses.Helpers;
 using System.Diagnostics;
 
 using System.Numerics;
@@ -57,7 +54,7 @@ namespace ISM2Import
             int[] duplicateOf = new int[vtxArray.Length];
             for(int i = 0; i < duplicateOf.Length; i++)
             {
-                vtxArray[i].EasySlashIndex = i;
+                ((PMXExtendedVertex)vtxArray[i]).EasySlashIndex = i;
                 duplicateOf[i] = -1;
             }
 
@@ -117,7 +114,7 @@ namespace ISM2Import
 
         private static PMXVertex ReplaceVertexIfRequired(PMXVertex input, PMXModel md, int[] duplicateList)
         {
-            int dupIndex = duplicateList[input.EasySlashIndex];
+            int dupIndex = duplicateList[((PMXExtendedVertex)input).EasySlashIndex];
             if (dupIndex >= 0)
             {
                 return md.Vertices[dupIndex];

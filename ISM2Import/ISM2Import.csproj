@@ -32,6 +32,10 @@
     <WarningLevel>4</WarningLevel>
   </PropertyGroup>
   <ItemGroup>
+    <Reference Include="PMXLibrary, Version=1.0.0.0, Culture=neutral, processorArchitecture=MSIL">
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>..\..\PMXStructure\PMXLibrary\bin\Release\PMXLibrary.dll</HintPath>
+    </Reference>
     <Reference Include="System" />
     <Reference Include="System.Core" />
     <Reference Include="System.Numerics" />
@@ -50,42 +54,7 @@
     <Compile Include="Half\Half.cs" />
     <Compile Include="Half\HalfHelper.cs" />
     <Compile Include="ISMModel.cs" />
-    <Compile Include="PMXModel\PMXClasses\General\PMXColorRGB.cs" />
-    <Compile Include="PMXModel\PMXClasses\General\PMXColorRGBA.cs" />
-    <Compile Include="PMXModel\PMXClasses\General\PMXQuaternion.cs" />
-    <Compile Include="PMXModel\PMXClasses\General\PMXVector2.cs" />
-    <Compile Include="PMXModel\PMXClasses\General\PMXVector3.cs" />
-    <Compile Include="PMXModel\PMXClasses\Helpers\MMDExportSettings.cs" />
-    <Compile Include="PMXModel\PMXClasses\Helpers\MMDImportSettings.cs" />
-    <Compile Include="PMXModel\PMXClasses\Helpers\PMDParser.cs" />
-    <Compile Include="PMXModel\PMXClasses\Helpers\PMXBitLength.cs" />
-    <Compile Include="PMXModel\PMXClasses\Helpers\PMXParser.cs" />
-    <Compile Include="PMXModel\PMXClasses\Parts\Morphs\PMXMorphOffsetBase.cs" />
-    <Compile Include="PMXModel\PMXClasses\Parts\Morphs\PMXMorphOffsetBone.cs" />
-    <Compile Include="PMXModel\PMXClasses\Parts\Morphs\PMXMorphOffsetGroup.cs" />
-    <Compile Include="PMXModel\PMXClasses\Parts\Morphs\PMXMorphOffsetMaterial.cs" />
-    <Compile Include="PMXModel\PMXClasses\Parts\Morphs\PMXMorphOffsetUV.cs" />
-    <Compile Include="PMXModel\PMXClasses\Parts\Morphs\PMXMorphOffsetVertex.cs" />
-    <Compile Include="PMXModel\PMXClasses\Parts\PMXBasePart.cs" />
-    <Compile Include="PMXModel\PMXClasses\Parts\PMXBone.cs" />
-    <Compile Include="PMXModel\PMXClasses\Parts\PMXDisplaySlot.cs" />
-    <Compile Include="PMXModel\PMXClasses\Parts\PMXIK.cs" />
-    <Compile Include="PMXModel\PMXClasses\Parts\PMXIKLink.cs" />
-    <Compile Include="PMXModel\PMXClasses\Parts\PMXJoint.cs" />
-    <Compile Include="PMXModel\PMXClasses\Parts\PMXMaterial.cs" />
-    <Compile Include="PMXModel\PMXClasses\Parts\PMXMorph.cs" />
-    <Compile Include="PMXModel\PMXClasses\Parts\PMXRigidBody.cs" />
-    <Compile Include="PMXModel\PMXClasses\Parts\PMXTriangle.cs" />
-    <Compile Include="PMXModel\PMXClasses\Parts\PMXVertex.cs" />
-    <Compile Include="PMXModel\PMXClasses\Parts\RigidBodies\PMXNoCollissionGroup.cs" />
-    <Compile Include="PMXModel\PMXClasses\Parts\VertexDeform\PMXBaseDeform.cs" />
-    <Compile Include="PMXModel\PMXClasses\Parts\VertexDeform\PMXVertexDeformBDEF1.cs" />
-    <Compile Include="PMXModel\PMXClasses\Parts\VertexDeform\PMXVertexDeformBDEF2.cs" />
-    <Compile Include="PMXModel\PMXClasses\Parts\VertexDeform\PMXVertexDeformBDEF4.cs" />
-    <Compile Include="PMXModel\PMXClasses\Parts\VertexDeform\PMXVertexDeformQDEF.cs" />
-    <Compile Include="PMXModel\PMXClasses\Parts\VertexDeform\PMXVertexDeformSDEF.cs" />
-    <Compile Include="PMXModel\PMXClasses\PMXModel.cs" />
-    <Compile Include="PMXVertexExtensions.cs" />
+    <Compile Include="PMXExtendedVertex.cs" />
     <Compile Include="Program.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="TriangleClearance.cs" />

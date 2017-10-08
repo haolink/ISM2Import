@@ -5,8 +5,6 @@ using System.Text;
 using System.Threading.Tasks;
 
 using PMXStructure.PMXClasses;
-using PMXStructure.PMXClasses.Parts;
-using PMXStructure.PMXClasses.General;
 
 namespace ISM2Import
 {
@@ -16,16 +14,19 @@ namespace ISM2Import
 
         internal class TriangleEdge : IEqualityComparer<TriangleEdge>
         {
-            public PMXVertex Vertex1 { get; set; }
-            public PMXVertex Vertex2 { get; set; }
+            public PMXExtendedVertex Vertex1 { get; set; }
+            public PMXExtendedVertex Vertex2 { get; set; }
 
             private bool _identicalLocation;
 
             private int _hashCode = 0;
 
-            public TriangleEdge(PMXVertex vtx1, PMXVertex vtx2, bool identicalLocation)
+            public TriangleEdge(PMXVertex vtx1b, PMXVertex vtx2b, bool identicalLocation)
             {
                 this._identicalLocation = identicalLocation;
+
+                PMXExtendedVertex vtx1 = (PMXExtendedVertex)vtx1b;
+                PMXExtendedVertex vtx2 = (PMXExtendedVertex)vtx2b;
 
                 if (vtx1.EasySlashIndex < vtx2.EasySlashIndex)
                 {
@@ -319,7 +320,7 @@ namespace ISM2Import
             int i = 0;
             for(i = 0; i < clearModel._model.Vertices.Count; i++)
             {
-                clearModel._model.Vertices[i].EasySlashIndex = i;
+                ((PMXExtendedVertex)clearModel._model.Vertices[i]).EasySlashIndex = i;
             }
 
             List<PMXMaterial> resultMaterials = new List<PMXMaterial>();

@@ -4,15 +4,12 @@ using System.IO;
 using EndianStreamTools;
 
 using PMXStructure.PMXClasses;
-using PMXStructure.PMXClasses.Parts;
-using PMXStructure.PMXClasses.General;
-using PMXStructure.PMXClasses.Parts.VertexDeform;
 
 using System.Numerics;
 
 namespace ISM2Import
 {
-    class ISMModel
+    public class ISMModel
     {
         public static PMXModel ImportISM(string filename)
         {
@@ -646,7 +643,7 @@ namespace ISM2Import
             PMXVertex vtx = null;
             if (pmxModel.Vertices.Count <= index)
             {
-                vtx = new PMXVertex(pmxModel);
+                vtx = new PMXExtendedVertex(pmxModel);
                 pmxModel.Vertices.Add(vtx);
             }
             else
