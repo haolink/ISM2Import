@@ -8,7 +8,7 @@ using PMXStructure.PMXClasses;
 
 namespace ISM2Import
 {
-    public class PMXExtendedVertex : PMXVertex
+    public class PMXExtendedVertex : PMXVertex, IComparable<PMXExtendedVertex>
     {
         public int EasySlashIndex { get; set; }
 
@@ -66,5 +66,52 @@ namespace ISM2Import
                 );
         }
 
+        public int CompareTo(PMXExtendedVertex other)
+        {
+            int res = this.Position.X.CompareTo(other.Position.X);
+            if(res != 0)
+            {
+                return res;
+            }
+
+            res = this.Position.Y.CompareTo(other.Position.Y);
+            if (res != 0)
+            {
+                return res;
+            }
+
+            res = this.Position.Z.CompareTo(other.Position.Z);
+            if (res != 0)
+            {
+                return res;
+            }
+
+            res = this.Normals.X.CompareTo(other.Normals.X);
+            if (res != 0)
+            {
+                return res;
+            }
+
+            res = this.Normals.Y.CompareTo(other.Normals.Y);
+            if (res != 0)
+            {
+                return res;
+            }
+
+            res = this.Normals.Z.CompareTo(other.Normals.Z);
+            if (res != 0)
+            {
+                return res;
+            }
+
+            res = this.UV.U.CompareTo(other.UV.U);
+            if (res != 0)
+            {
+                return res;
+            }
+
+            res = this.UV.V.CompareTo(other.UV.V);
+            return res;       
+        }
     }
 }

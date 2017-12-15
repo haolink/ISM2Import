@@ -190,11 +190,11 @@ namespace ISM2Import
                             sp.BaseStream.Seek(matSubOffset + 24, SeekOrigin.Begin);
                             matSubOffset = sp.ReadS32();
                             sp.BaseStream.Seek(matSubOffset, SeekOrigin.Begin);
-                            mat.DiffuseTexture = stringArray[sp.ReadS32()] + ".png";
+                            mat.DiffuseTexture = stringArray[sp.ReadS32()] + ".dds";
                         }
                         else
                         {
-                            mat.DiffuseTexture = "tex_c.png";
+                            mat.DiffuseTexture = "tex_c.dds";
                         }
 
 
