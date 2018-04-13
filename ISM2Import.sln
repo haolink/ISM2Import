@@ -1,9 +1,11 @@
 ﻿
 Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio 15
-VisualStudioVersion = 15.0.26430.16
+VisualStudioVersion = 15.0.27004.2005
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ISM2Import", "ISM2Import\ISM2Import.csproj", "{01D94A03-32C6-4597-A00B-33244DAECAEA}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ISM2Convert", "ISM2Convert\ISM2Convert.csproj", "{7C25441C-42C4-454B-85B4-7F43D8421D22}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -15,8 +17,15 @@ Global
 		{01D94A03-32C6-4597-A00B-33244DAECAEA}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{01D94A03-32C6-4597-A00B-33244DAECAEA}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{01D94A03-32C6-4597-A00B-33244DAECAEA}.Release|Any CPU.Build.0 = Release|Any CPU
+		{7C25441C-42C4-454B-85B4-7F43D8421D22}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{7C25441C-42C4-454B-85B4-7F43D8421D22}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{7C25441C-42C4-454B-85B4-7F43D8421D22}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{7C25441C-42C4-454B-85B4-7F43D8421D22}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
+	EndGlobalSection
+	GlobalSection(ExtensibilityGlobals) = postSolution
+		SolutionGuid = {A595338B-0564-4E51-90A8-077857A72AC6}
 	EndGlobalSection
 EndGlobal

@@ -8,7 +8,7 @@ using PMXStructure.PMXClasses;
 
 using System.Numerics;
 
-namespace ISM2Import
+namespace ISM2Convert
 {
     public class ISMModel
     {
@@ -216,7 +216,7 @@ namespace ISM2Import
             {
                 if (sd.SectionType == 03)
                 {
-                    Console.WriteLine("Object data");
+                    MainForm.AppendToOutput("Object data", true);
                     sp.BaseStream.Seek(sd.SectionOffset + 8, SeekOrigin.Begin);
                     int boneCount = sp.ReadS32();
                     uint[] boneOffsets = new uint[boneCount];
@@ -314,7 +314,7 @@ namespace ISM2Import
             {
                 if (sd.SectionType == 11)
                 {
-                    Console.WriteLine("Vertex data");
+                    MainForm.AppendToOutput("Vertex data", true);
                     sp.BaseStream.Seek(sd.SectionOffset + 8, SeekOrigin.Begin);
                     int vtxHeaderTotal = sp.ReadS32();
 
@@ -864,7 +864,7 @@ namespace ISM2Import
             int surfaceTotal = sp.ReadS32();
 
             string surfaceName = stringArray[sp.ReadS32()];
-            Console.WriteLine(surfaceName);
+            MainForm.AppendToOutput(surfaceName, true);
 
             sp.BaseStream.Seek(8, SeekOrigin.Current);
 
@@ -879,7 +879,7 @@ namespace ISM2Import
             for (i = 0; i < surfaceTotal; i++)
             {
                 sp.BaseStream.Seek(surfaceOffsets[i], SeekOrigin.Begin);
-                Console.WriteLine("Surface start is located at 0x" + sp.BaseStream.Position.ToString("X").ToUpperInvariant());
+                MainForm.AppendToOutput("Surface start is located at 0x" + sp.BaseStream.Position.ToString("X").ToUpperInvariant(), true);
 
                 sp.BaseStream.Seek(12, SeekOrigin.Current);
                 string surfaceMatName = stringArray[sp.ReadS32()];
