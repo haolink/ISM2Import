@@ -1,6 +1,11 @@
 -- Compile Heart ISM2 model importer by Random Talking Bush, based on howfie's Lightwave importer.
 -- If there are any problems, please contact me at The VG Resource (Random Talking Bush), Steam, Twitter, Tumblr or XeNTaX (RandomTBush) so I can fix it up ASAP.
--- Last modified August 21st, 2017
+
+-- Changelog:
+-- September 26th, 2017:
+-- Fixed a script error caused by my own stupidity, preventing half of the script from working correctly!
+
+-- August 21st, 2017:
 -- Added a few more options for DDS/PNG toggle, folder path, and model scale (100x by default)
 -- Added option to output face.anm information.
 -- Merged the Console / PC and debug versions of the script all together.
@@ -21,7 +26,7 @@ rollout ISM2Importer "Compile Heart ISM2 model importer" width:525 height:160
 	radiobuttons tglTexFormat "Texture format:" labels:#("DDS","PNG") pos:[160,17] height:10 columns:2 default:1
 	radiobuttons tglTexPath "Texture path:" labels:#("TEXTURE\001","Relative") pos:[160,52] height:10 columns:2 default:1
 	
-	label lblUpdate "(Updated: 08-21-2017)" pos:[ISM2Importer.width-115,ISM2Importer.height-19]
+	label lblUpdate "(Updated: 09-26-2017)" pos:[ISM2Importer.width-115,ISM2Importer.height-19]
 
 fn floatSwap2 f = (
 	i = bit.floatAsInt f
@@ -55,10 +60,6 @@ fn ReadBEfloat fstream = (
 return floatSwap2(readfloat fstream)
 )
 
-fn ReadBEHalfFloat fstream = (
-return convertTo32(readBEword fstream)
-)
-
 fn ReadBElong fstream = (
 long = readlong fstream
 long = bit.swapBytes long 1 4
@@ -68,6 +69,10 @@ return long
 
 fn ReadBEword fstream = (
 return (bit.swapBytes (readshort fstream #unsigned) 1 2)
+)
+
+fn ReadBEHalfFloat fstream = (
+return convertTo32(readBEword fstream)
 )
 
 fn printDebug pr = (if tglDebug.state do print(pr))
@@ -134,7 +139,7 @@ if ISM2 == 843928393 then(
 fseek f 0x14 #seek_set
 EndianCheck = readlong f #unsigned
 fseek f 0x04 #seek_set
-disableSceneRedraw()
+-- disableSceneRedraw()
 if EndianCheck > 0 and EndianCheck < 65535 then(
 VersionA = readbyte f #unsigned
 VersionB = readbyte f #unsigned
@@ -912,89 +917,6 @@ append W1_array (Weight_Info_Struct Weight1:Weight1 Weight2:Weight2 Weight3:Weig
 )
 printDebug("Vertex/UV/Weighting data ends at 0x" + (bit.intAsHex(ftell f))as string)
 
-if BNArrRig.count == 0 do(
-for b = 1 to Vert_array.count do(
-	append B1_array (Bone_Info_Struct Bone1:1 Bone2:1 Bone3:1 Bone4:1 Bone5:1 Bone6:1 Bone7:1 Bone8:1)
-	append W1_array (Weight_Info_Struct Weight1:1 Weight2:0 Weight3:0 Weight4:0 Weight5:0 Weight6:0 Weight7:0 Weight8:0)
-	)
-	BNArrRig[1] = BNArr[1]
-)
-
-for b = 1 to W1_array.count Do (
-w = (weight_data boneids:#() weights:#())
-maxweight = 0
-   
-if(W1_array[b].Weight1 != 0) then
-   maxweight = maxweight + W1_array[b].Weight1
-if(W1_array[b].Weight2 != 0) then
-   maxweight = maxweight + W1_array[b].Weight2
-if(W1_array[b].Weight3 != 0) then
-   maxweight = maxweight + W1_array[b].Weight3
-if(W1_array[b].Weight4 != 0) then
-   maxweight = maxweight + W1_array[b].Weight4
-if(W1_array[b].Weight5 != 0) then
-   maxweight = maxweight + W1_array[b].Weight5
-if(W1_array[b].Weight6 != 0) then
-   maxweight = maxweight + W1_array[b].Weight6
-if(W1_array[b].Weight7 != 0) then
-   maxweight = maxweight + W1_array[b].Weight7
-if(W1_array[b].Weight8 != 0) then
-   maxweight = maxweight + W1_array[b].Weight8
-
-if(maxweight != 0) then
-   (
-      if(W1_array[b].Weight1 != 0) then
-      (
-         w1 = W1_array[b].Weight1 as float
-         append w.boneids (B1_array[b].Bone1)
-         append w.weights (w1)
-      )
-      if(W1_array[b].Weight2 != 0) then
-      (
-         w2 = W1_array[b].Weight2 as float
-         append w.boneids (B1_array[b].Bone2)
-         append w.weights (w2)
-      )
-      if(W1_array[b].Weight3 != 0) then
-      (
-         w3 = W1_array[b].Weight3 as float
-         append w.boneids (B1_array[b].Bone3)
-         append w.weights (w3)
-      )
-      if(W1_array[b].Weight4 != 0) then
-      (
-         w4 = W1_array[b].Weight4 as float
-         append w.boneids (B1_array[b].Bone4)
-         append w.weights (w4)
-      )      
-      if(W1_array[b].Weight5 != 0) then
-      (
-         w5 = W1_array[b].Weight5 as float
-         append w.boneids (B1_array[b].Bone5)
-         append w.weights (w5)
-      )     
-      if(W1_array[b].Weight6 != 0) then
-      (
-         w6 = W1_array[b].Weight6 as float
-         append w.boneids (B1_array[b].Bone6)
-         append w.weights (w6)
-      )     
-      if(W1_array[b].Weight7 != 0) then
-      (
-         w7 = W1_array[b].Weight7 as float
-         append w.boneids (B1_array[b].Bone7)
-         append w.weights (w7)
-      )     
-      if(W1_array[b].Weight8 != 0) then
-      (
-         w8 = W1_array[b].Weight8 as float
-         append w.boneids (B1_array[b].Bone8)
-         append w.weights (w8)
-      )     
-   )
-append Weight_array w
-)
-
 )
 
 if SectionType == 110 do(
@@ -1232,6 +1154,90 @@ multimat.numsubs = MatTotal
 
 )
 
+
+if BNArrRig.count == 0 do(
+for b = 1 to Vert_array.count do(
+	append B1_array (Bone_Info_Struct Bone1:1 Bone2:1 Bone3:1 Bone4:1 Bone5:1 Bone6:1 Bone7:1 Bone8:1)
+	append W1_array (Weight_Info_Struct Weight1:1 Weight2:0 Weight3:0 Weight4:0 Weight5:0 Weight6:0 Weight7:0 Weight8:0)
+	)
+	BNArrRig[1] = BNArr[1]
+)
+
+for b = 1 to W1_array.count Do (
+w = (weight_data boneids:#() weights:#())
+maxweight = 0
+   
+if(W1_array[b].Weight1 != 0) then
+   maxweight = maxweight + W1_array[b].Weight1
+if(W1_array[b].Weight2 != 0) then
+   maxweight = maxweight + W1_array[b].Weight2
+if(W1_array[b].Weight3 != 0) then
+   maxweight = maxweight + W1_array[b].Weight3
+if(W1_array[b].Weight4 != 0) then
+   maxweight = maxweight + W1_array[b].Weight4
+if(W1_array[b].Weight5 != 0) then
+   maxweight = maxweight + W1_array[b].Weight5
+if(W1_array[b].Weight6 != 0) then
+   maxweight = maxweight + W1_array[b].Weight6
+if(W1_array[b].Weight7 != 0) then
+   maxweight = maxweight + W1_array[b].Weight7
+if(W1_array[b].Weight8 != 0) then
+   maxweight = maxweight + W1_array[b].Weight8
+
+if(maxweight != 0) then
+   (
+      if(W1_array[b].Weight1 != 0) then
+      (
+         w1 = W1_array[b].Weight1 as float
+         append w.boneids (B1_array[b].Bone1)
+         append w.weights (w1)
+      )
+      if(W1_array[b].Weight2 != 0) then
+      (
+         w2 = W1_array[b].Weight2 as float
+         append w.boneids (B1_array[b].Bone2)
+         append w.weights (w2)
+      )
+      if(W1_array[b].Weight3 != 0) then
+      (
+         w3 = W1_array[b].Weight3 as float
+         append w.boneids (B1_array[b].Bone3)
+         append w.weights (w3)
+      )
+      if(W1_array[b].Weight4 != 0) then
+      (
+         w4 = W1_array[b].Weight4 as float
+         append w.boneids (B1_array[b].Bone4)
+         append w.weights (w4)
+      )      
+      if(W1_array[b].Weight5 != 0) then
+      (
+         w5 = W1_array[b].Weight5 as float
+         append w.boneids (B1_array[b].Bone5)
+         append w.weights (w5)
+      )     
+      if(W1_array[b].Weight6 != 0) then
+      (
+         w6 = W1_array[b].Weight6 as float
+         append w.boneids (B1_array[b].Bone6)
+         append w.weights (w6)
+      )     
+      if(W1_array[b].Weight7 != 0) then
+      (
+         w7 = W1_array[b].Weight7 as float
+         append w.boneids (B1_array[b].Bone7)
+         append w.weights (w7)
+      )     
+      if(W1_array[b].Weight8 != 0) then
+      (
+         w8 = W1_array[b].Weight8 as float
+         append w.boneids (B1_array[b].Bone8)
+         append w.weights (w8)
+      )     
+   )
+append Weight_array w
+)
+
 for j = 1 to BNArrRig.count do(
 	if BNArrRig[j] == undefined do(
 		BNArrRig[j] = BNArrRig[1]
@@ -1240,7 +1246,7 @@ for j = 1 to BNArrRig.count do(
 )
 
 msh = mesh vertices:Vert_array faces:Face_array
-msh.name = "Neptunia"
+msh.name = g
 msh.material = multimat
 
 msh.numTVerts = Vert_array.count
@@ -1468,7 +1474,7 @@ m15 = readBEfloat f
 m16 = readBEfloat f
 m17 = readBEfloat f
 m18 = readBEfloat f
-printDebug("Values = " + m11 as string + ", " + m12 as string + ", " + m13 as string + ", " + m14 as string)
+printDebug("Values = " + m15 as string + ", " + m16 as string + ", " + m17 as string + ", " + m18 as string)
 )
 
 if SectionType == 94 do(
@@ -1478,7 +1484,7 @@ m25 = readBEfloat f
 m26 = readBEfloat f
 m27 = readBEfloat f
 m28 = readBEfloat f
-printDebug("Values = " + m21 as string + ", " + m22 as string + ", " + m23 as string + ", " + m24 as string)
+printDebug("Values = " + m25 as string + ", " + m26 as string + ", " + m27 as string + ", " + m28 as string)
 )
 
 if SectionType == 95 do(
@@ -1488,7 +1494,7 @@ m35 = readBEfloat f
 m36 = readBEfloat f
 m37 = readBEfloat f
 m38 = readBEfloat f
-printDebug("Values = " + m31 as string + ", " + m32 as string + ", " + m33 as string + ", " + m34 as string)
+printDebug("Values = " + m35 as string + ", " + m36 as string + ", " + m37 as string + ", " + m38 as string)
 )
 
 if SectionType == 103 do(
@@ -1498,7 +1504,7 @@ m11 = readBEfloat f
 m12 = readBEfloat f
 m13 = readBEfloat f
 m14 = readBEfloat f
-printDebug("Values = " + m15 as string + ", " + m16 as string + ", " + m17 as string + ", " + m18 as string)
+printDebug("Values = " + m11 as string + ", " + m12 as string + ", " + m13 as string + ", " + m14 as string)
 )
 
 if SectionType == 104 do(
@@ -1508,7 +1514,7 @@ m21 = readBEfloat f
 m22 = readBEfloat f
 m23 = readBEfloat f
 m24 = readBEfloat f
-printDebug("Values = " + m25 as string + ", " + m26 as string + ", " + m27 as string + ", " + m28 as string)
+printDebug("Values = " + m21 as string + ", " + m22 as string + ", " + m23 as string + ", " + m24 as string)
 )
 
 if SectionType == 105 do(
@@ -1518,7 +1524,7 @@ m31 = readBEfloat f
 m32 = readBEfloat f
 m33 = readBEfloat f
 m34 = readBEfloat f
-printDebug("Values = " + m35 as string + ", " + m36 as string + ", " + m37 as string + ", " + m38 as string)
+printDebug("Values = " + m31 as string + ", " + m32 as string + ", " + m33 as string + ", " + m34 as string)
 )
 
 if SectionType == 112 do(
@@ -1742,7 +1748,7 @@ polygontotal = readBElong f
 polygontype = readBEword f
 polygontypeB = readBEword f
 blank = readBElong f
-MatNum = 1
+MatNum = PolyNum
 
 		for z = 1 to SurfaceName_array.count do(
 			MatName = MatName_array[z]
@@ -1778,6 +1784,8 @@ VertexCount = readBElong f
 VertexSize = readBElong f
 vertexstuff = readBElong f
 VertexOffset_array = #()
+printDebug("Vertex size: 0x" +(bit.intAsHex(vertexsize))as string)
+printDebug("Vertex type: " + vertextype as string)
 for e = 1 to VertexTotal do(
 VertexOffset = readBElong f
 append VertexOffset_array VertexOffset
@@ -1794,16 +1802,15 @@ vertexstartoffset = readBElong f
 fseek f vertexstartoffset #seek_set
 )
 printDebug("Vertex/UV/Weighting data is located at 0x" + (bit.intAsHex(ftell f))as string)
-printDebug("VertexType: " + VertexType as string)
 for e = 1 to VertexCount do(
 
 if VertexType == 0x01 and vertexsize == 32 do(
 vx = readBEfloat f * ModelScale
 vy = readBEfloat f * ModelScale
 vz = readBEfloat f * ModelScale
-nx = readBEhalffloat f
-ny = readBEhalffloat f
-nz = readBEhalffloat f
+nx = readBEhalffloat f * 2
+ny = readBEhalffloat f * 2
+nz = readBEhalffloat f * 2
 nx2 = readBEhalffloat f
 ny2 = readBEhalffloat f
 nz2 = readBEhalffloat f
@@ -1819,9 +1826,9 @@ if VertexType == 0x01 and vertexsize == 48 do(
 vx = readBEfloat f * ModelScale
 vy = readBEfloat f * ModelScale
 vz = readBEfloat f * ModelScale
-nx = readBEhalffloat f
-ny = readBEhalffloat f
-nz = readBEhalffloat f
+nx = readBEhalffloat f * 2
+ny = readBEhalffloat f * 2
+nz = readBEhalffloat f * 2
 nx2 = readBEhalffloat f
 ny2 = readBEhalffloat f
 nz2 = readBEhalffloat f
@@ -1858,57 +1865,6 @@ append W1_array (Weight_Info_Struct Weight1:Weight1 Weight2:Weight2 Weight3:Weig
 
 )
 printDebug("Vertex/UV/Weighting data ends at 0x" + (bit.intAsHex(ftell f))as string)
-	
-if BNArrRig.count == 0 do(
-for b = 1 to Vert_array.count do(
-	append B1_array (Bone_Info_Struct Bone1:1 Bone2:1 Bone3:1 Bone4:1 Bone5:1 Bone6:1 Bone7:1 Bone8:1)
-	append W1_array (Weight_Info_Struct Weight1:1 Weight2:0 Weight3:0 Weight4:0 Weight5:0 Weight6:0 Weight7:0 Weight8:0)
-	)
-	BNArrRig[1] = BNArr[1]
-)
-
-for b = 1 to W1_array.count Do (
-w = (weight_data boneids:#() weights:#())
-maxweight = 0
-   
-if(W1_array[b].Weight1 != 0) then
-   maxweight = maxweight + W1_array[b].Weight1
-if(W1_array[b].Weight2 != 0) then
-   maxweight = maxweight + W1_array[b].Weight2
-if(W1_array[b].Weight3 != 0) then
-   maxweight = maxweight + W1_array[b].Weight3
-if(W1_array[b].Weight4 != 0) then
-   maxweight = maxweight + W1_array[b].Weight4
-
-if(maxweight != 0) then
-   (
-      if(W1_array[b].Weight1 != 0) then
-      (
-         w1 = W1_array[b].Weight1 as float
-         append w.boneids (B1_array[b].Bone1)
-         append w.weights (w1)
-      )
-      if(W1_array[b].Weight2 != 0) then
-      (
-         w2 = W1_array[b].Weight2 as float
-         append w.boneids (B1_array[b].Bone2)
-         append w.weights (w2)
-      )
-      if(W1_array[b].Weight3 != 0) then
-      (
-         w3 = W1_array[b].Weight3 as float
-         append w.boneids (B1_array[b].Bone3)
-         append w.weights (w3)
-      )
-      if(W1_array[b].Weight4 != 0) then
-      (
-         w4 = W1_array[b].Weight4 as float
-         append w.boneids (B1_array[b].Bone4)
-         append w.weights (w4)
-      )      
-   )
-append Weight_array w
-)
 
 )
 
@@ -2081,27 +2037,75 @@ multimat.numsubs = MatTotal
 
 )
 
-for j = 1 to BNArrRig.count do(
-	if BNArrRig[j] == undefined do(BNArrRig[j] = BNArrRig[1])
+	
+if BNArrRig.count == 0 do(
+for b = 1 to Vert_array.count do(
+	append B1_array (Bone_Info_Struct Bone1:1 Bone2:1 Bone3:1 Bone4:1 Bone5:1 Bone6:1 Bone7:1 Bone8:1)
+	append W1_array (Weight_Info_Struct Weight1:1 Weight2:0 Weight3:0 Weight4:0 Weight5:0 Weight6:0 Weight7:0 Weight8:0)
+	)
+	BNArrRig[1] = BNArr[1]
 )
 
+for b = 1 to W1_array.count Do (
+w = (weight_data boneids:#() weights:#())
+maxweight = 0
+   
+if(W1_array[b].Weight1 != 0) then
+   maxweight = maxweight + W1_array[b].Weight1
+if(W1_array[b].Weight2 != 0) then
+   maxweight = maxweight + W1_array[b].Weight2
+if(W1_array[b].Weight3 != 0) then
+   maxweight = maxweight + W1_array[b].Weight3
+if(W1_array[b].Weight4 != 0) then
+   maxweight = maxweight + W1_array[b].Weight4
+
+if(maxweight != 0) then
+   (
+      if(W1_array[b].Weight1 != 0) then
+      (
+         w1 = W1_array[b].Weight1 as float
+         append w.boneids (B1_array[b].Bone1)
+         append w.weights (w1)
+      )
+      if(W1_array[b].Weight2 != 0) then
+      (
+         w2 = W1_array[b].Weight2 as float
+         append w.boneids (B1_array[b].Bone2)
+         append w.weights (w2)
+      )
+      if(W1_array[b].Weight3 != 0) then
+      (
+         w3 = W1_array[b].Weight3 as float
+         append w.boneids (B1_array[b].Bone3)
+         append w.weights (w3)
+      )
+      if(W1_array[b].Weight4 != 0) then
+      (
+         w4 = W1_array[b].Weight4 as float
+         append w.boneids (B1_array[b].Bone4)
+         append w.weights (w4)
+      )      
+   )
+append Weight_array w
+)
+
+for j = 1 to BNArrRig.count do(
+	if BNArrRig[j] == undefined do(
+		BNArrRig[j] = BNArrRig[1]
+		print ("Bone #" + j as string + " is invalid! Defaulting to root bone!")
+		)
+)
+
+print Weight_array
+
 msh = mesh vertices:Vert_array faces:Face_array
-msh.name = "Neptunia"
+msh.name = g
 msh.material = multimat
 
 msh.numTVerts = Vert_array.count
--- if VertColors == true then (
--- 	setNumCPVVerts msh msh.numTVerts
--- 	setCVertMode msh true
--- 	setShadeCVerts msh true
--- )
 
 defaultVCFaces msh
 buildTVFaces msh
--- if VertColors == true then (
--- for j = 1 to Color_array.count do setvertcolor msh j Color_array[j]
--- for j = 1 to Alpha_array.count do(meshop.setVertAlpha msh -2 j Alpha_array[j])
--- )
 for j = 1 to UV_array.count do setTVert msh j UV_array[j]
 for j = 1 to Face_array.count do (	
 	setTVFace msh j Face_array[j]
